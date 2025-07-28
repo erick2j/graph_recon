@@ -404,148 +404,148 @@ def cmp_by_pre3D(i_file_name,i_th):
 #python graphRecon.py grid2D -g 2 0.6
 #python graphRecon.py test_3D -g 3 0.05
 #python graphRecon.py test_3D -t 3 0.05
+if __name__ == "__main__":
+    print(sys.argv)
 
-print(sys.argv)
+    if len(sys.argv) != 5:
+        print("python graphRecon.py <dataset_name> <dataset_form> <dimension> <threshold>")
+        print("<dataset_form>   -g input grid")
+        print("<dataset_form>   -t input triangulation")
+        sys.exit(0)
 
-if len(sys.argv) != 5:
-    print("python graphRecon.py <dataset_name> <dataset_form> <dimension> <threshold>")
-    print("<dataset_form>   -g input grid")
-    print("<dataset_form>   -t input triangulation")
-    sys.exit(0)
+    file_name = sys.argv[1]
+    input_arg = sys.argv[2]
+    dimension = int(sys.argv[3])
+    threshold = float(sys.argv[4])
 
-file_name = sys.argv[1]
-input_arg = sys.argv[2]
-dimension = int(sys.argv[3])
-threshold = float(sys.argv[4])
-
-subsample_grid = 1
-flip = False
+    subsample_grid = 1
+    flip = False
 
 # 2D
-if dimension == 2:
-    ## input grid
-    if os.path.isfile('result/'+file_name+'/presave.bin') and os.path.isfile('dataset/'+file_name+'/SC.bin'):
-        print('Use presaved data.')
-        recon_vert, recon_edge = cmp_by_pre2D(file_name,threshold)
+    if dimension == 2:
+        ## input grid
+        if os.path.isfile('result/'+file_name+'/presave.bin') and os.path.isfile('dataset/'+file_name+'/SC.bin'):
+            print('Use presaved data.')
+            recon_vert, recon_edge = cmp_by_pre2D(file_name,threshold)
 
-        if len(recon_edge)>0:
-            # visualize vert and edge
-            recon_lines = []
-            createLines(recon_lines, recon_edge, recon_vert)
-            fig = plt.figure()
-            plt.clf()
+            if len(recon_edge)>0:
+                # visualize vert and edge
+                recon_lines = []
+                createLines(recon_lines, recon_edge, recon_vert)
+                fig = plt.figure()
+                plt.clf()
 
-            ax1 = fig.add_subplot(111)
-            #ax1.imshow(grid2d, cmap='gray')
-            #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
-            drawLines(recon_lines, 'red', 0.5, 2, ax1)
+                ax1 = fig.add_subplot(111)
+                #ax1.imshow(grid2d, cmap='gray')
+                #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
+                drawLines(recon_lines, 'red', 0.5, 2, ax1)
 
-            x_min = np.min(recon_vert[:,0])
-            x_max = np.max(recon_vert[:,0])
-            y_min = np.min(recon_vert[:,1])
-            y_max = np.max(recon_vert[:,1])
+                x_min = np.min(recon_vert[:,0])
+                x_max = np.max(recon_vert[:,0])
+                y_min = np.min(recon_vert[:,1])
+                y_max = np.max(recon_vert[:,1])
 
-            ax1.set_xlim(x_min, x_max)
-            ax1.set_ylim(y_max, y_min)
-            plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
+                ax1.set_xlim(x_min, x_max)
+                ax1.set_ylim(y_max, y_min)
+                plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
 
-    elif input_arg=='-g':
-        grid2d = np.loadtxt('dataset/'+file_name+'/grid.txt')
-        # flip
-        #grid2d = np.max(grid2d)- grid2d
-        grid2d = grid2d/np.max(np.abs(grid2d))
+        elif input_arg=='-g':
+            grid2d = np.loadtxt('dataset/'+file_name+'/grid.txt')
+            # flip
+            #grid2d = np.max(grid2d)- grid2d
+            grid2d = grid2d/np.max(np.abs(grid2d))
 
-        recon_vert, recon_edge = cmp_dm_img_grid2D(grid2d, threshold, file_name,subsample_grid)
+            recon_vert, recon_edge = cmp_dm_img_grid2D(grid2d, threshold, file_name,subsample_grid)
 
 
-        if len(recon_edge)>0:
-            # visualize vert and edge
-            recon_lines = []
-            createLines(recon_lines, recon_edge, recon_vert)
-            fig = plt.figure()
-            plt.clf()
+            if len(recon_edge)>0:
+                # visualize vert and edge
+                recon_lines = []
+                createLines(recon_lines, recon_edge, recon_vert)
+                fig = plt.figure()
+                plt.clf()
 
-            ax1 = fig.add_subplot(111)
-            ax1.imshow(grid2d, cmap='gray')
-            #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
-            drawLines(recon_lines, 'red', 0.5, 2, ax1)
+                ax1 = fig.add_subplot(111)
+                ax1.imshow(grid2d, cmap='gray')
+                #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
+                drawLines(recon_lines, 'red', 0.5, 2, ax1)
 
-            plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
-    ## input triangulation
-    elif input_arg=='-t':
-        recon_vert, recon_edge = cmp_dm_img_tri2D(file_name, threshold)
+                plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
+        ## input triangulation
+        elif input_arg=='-t':
+            recon_vert, recon_edge = cmp_dm_img_tri2D(file_name, threshold)
 
-        if len(recon_edge)>0:
-            # visualize vert and edge
-            recon_lines = []
-            createLines(recon_lines, recon_edge, recon_vert)
-            fig = plt.figure()
-            plt.clf()
+            if len(recon_edge)>0:
+                # visualize vert and edge
+                recon_lines = []
+                createLines(recon_lines, recon_edge, recon_vert)
+                fig = plt.figure()
+                plt.clf()
 
-            ax1 = fig.add_subplot(111)
-            #ax1.imshow(grid2d, cmap='gray')
-            #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
-            drawLines(recon_lines, 'red', 0.5, 2, ax1)
+                ax1 = fig.add_subplot(111)
+                #ax1.imshow(grid2d, cmap='gray')
+                #drawLines(h0_lines, 'blue', 0.5, 1, ax1)
+                drawLines(recon_lines, 'red', 0.5, 2, ax1)
 
-            x_min = np.min(recon_vert[:,0])
-            x_max = np.max(recon_vert[:,0])
-            y_min = np.min(recon_vert[:,1])
-            y_max = np.max(recon_vert[:,1])
+                x_min = np.min(recon_vert[:,0])
+                x_max = np.max(recon_vert[:,0])
+                y_min = np.min(recon_vert[:,1])
+                y_max = np.max(recon_vert[:,1])
 
-            ax1.set_xlim(x_min, x_max)
-            ax1.set_ylim(y_max, y_min)
-            plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
+                ax1.set_xlim(x_min, x_max)
+                ax1.set_ylim(y_max, y_min)
+                plt.savefig('result/'+file_name+'/visualization.png', dpi=200)
 # 3D
-elif dimension == 3:
-    if os.path.isfile('result/'+file_name+'/presave.bin') and os.path.isfile('dataset/'+file_name+'/SC.bin'):
-        print('Use presaved data.')
-        recon_vert, recon_edge = cmp_by_pre3D(file_name,threshold)
+    elif dimension == 3:
+        if os.path.isfile('result/'+file_name+'/presave.bin') and os.path.isfile('dataset/'+file_name+'/SC.bin'):
+            print('Use presaved data.')
+            recon_vert, recon_edge = cmp_by_pre3D(file_name,threshold)
 
-        # 3d plot
-        if len(recon_edge) > 0:
-            fig = plt.figure()
-            ax = a3.Axes3D(fig)
-            for e in recon_edge:
-                v1_ind = int(e[0])
-                v2_ind = int(e[1])
-                v1 = recon_vert[v1_ind]
-                v2 = recon_vert[v2_ind]
-                ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
-            #plt.show()
-            fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
-    elif input_arg == '-g':
-        grid3d = read_grid3d(file_name)
-        grid3d = grid3d/np.max(grid3d)
+            # 3d plot
+            if len(recon_edge) > 0:
+                fig = plt.figure()
+                ax = a3.Axes3D(fig)
+                for e in recon_edge:
+                    v1_ind = int(e[0])
+                    v2_ind = int(e[1])
+                    v1 = recon_vert[v1_ind]
+                    v2 = recon_vert[v2_ind]
+                    ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
+                #plt.show()
+                fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
+        elif input_arg == '-g':
+            grid3d = read_grid3d(file_name)
+            grid3d = grid3d/np.max(grid3d)
 
-        recon_vert, recon_edge = cmp_dm_img_grid3D(grid3d, threshold, file_name,subsample_grid)
+            recon_vert, recon_edge = cmp_dm_img_grid3D(grid3d, threshold, file_name,subsample_grid)
 
-        # 3d plot
-        if len(recon_edge) > 0:
-            fig = plt.figure()
-            ax = a3.Axes3D(fig)
-            for e in recon_edge:
-                v1_ind = int(e[0])
-                v2_ind = int(e[1])
-                v1 = recon_vert[v1_ind]
-                v2 = recon_vert[v2_ind]
-                ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
-            #plt.show()
-            fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
+            # 3d plot
+            if len(recon_edge) > 0:
+                fig = plt.figure()
+                ax = a3.Axes3D(fig)
+                for e in recon_edge:
+                    v1_ind = int(e[0])
+                    v2_ind = int(e[1])
+                    v1 = recon_vert[v1_ind]
+                    v2 = recon_vert[v2_ind]
+                    ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
+                #plt.show()
+                fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
 
-    elif input_arg == '-t':
+        elif input_arg == '-t':
 
-        print("3d triangulation")
-        recon_vert, recon_edge = cmp_dm_img_tri3D(file_name, threshold)
+            print("3d triangulation")
+            recon_vert, recon_edge = cmp_dm_img_tri3D(file_name, threshold)
 
-        # 3d plot
-        if len(recon_edge) > 0:
-            fig = plt.figure()
-            ax = a3.Axes3D(fig)
-            for e in recon_edge:
-                v1_ind = int(e[0])
-                v2_ind = int(e[1])
-                v1 = recon_vert[v1_ind]
-                v2 = recon_vert[v2_ind]
-                ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
-            #plt.show()
-            fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
+            # 3d plot
+            if len(recon_edge) > 0:
+                fig = plt.figure()
+                ax = a3.Axes3D(fig)
+                for e in recon_edge:
+                    v1_ind = int(e[0])
+                    v2_ind = int(e[1])
+                    v1 = recon_vert[v1_ind]
+                    v2 = recon_vert[v2_ind]
+                    ax.plot([v1[0],v2[0]],[v1[1],v2[1]],[v1[2],v2[2]], color='red', alpha=1, linewidth=1)
+                #plt.show()
+                fig.savefig('result/'+file_name+'/visualization.png', dpi=200)
